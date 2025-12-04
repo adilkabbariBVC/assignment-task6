@@ -1,0 +1,37 @@
+name: Build app on release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # Placeholder "tests" step – repo has no real test script
+      - name: Run tests
+        run: echo "No automated tests are configured for this project."
+
+      # Create a build folder to act as our "binary" output
+      - name: Build app (package source files)
+        run: |
+          mkdir -p build
+          cp -r src assets app.config.ts App.tsx package.json yarn.lock build/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: volunteam-build
+          path: build
